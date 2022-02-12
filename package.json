@@ -1,0 +1,24 @@
+{
+  "name": "first-api-rest",
+  "version": "1.0.0",
+  "description": "Creating my first API REST.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GabrielMerigo/first-api-rest.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GabrielMerigo/first-api-rest/issues"
+  },
+  "homepage": "https://github.com/GabrielMerigo/first-api-rest#readme",
+  "dependencies": {
+    "body-parser": "^1.19.1",
+    "express": "^4.17.2",
+    "nodemon": "^2.0.15"
+  }
+}
