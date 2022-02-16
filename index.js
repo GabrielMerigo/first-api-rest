@@ -1,7 +1,9 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const cors = require('cors')
 
+app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -52,11 +54,11 @@ app.get('/game/:id', (req, res) => {
 });
 
 app.post('/game', (req, res) => {
-  const { name, year, price } = req.body;
+  const { name, year, price, id } = req.body;
 
   if (name && year && price) {
     DB.games.push({
-      id: 4,
+      id,
       name,
       year,
       price
@@ -98,8 +100,6 @@ app.put('/game/:id', (req, res) => {
       res.sendStatus(200)
     }
   }
-
-
 })
 
 app.listen(8080, () => {
