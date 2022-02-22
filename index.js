@@ -1,7 +1,10 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const cors = require('cors')
+const cors = require('cors');
+const jwt = require('jsonwebtoken');
+
+const JWTSecret = "mykey"
 
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -46,7 +49,23 @@ const DB = {
 
 const getGame = id => DB.games.find(game => game.id === id);
 
-app.get('/games', (req, res) => {
+function auth(req, res, next){
+  const authToken = req.headers.authorization
+  const tokenWithBearer = String(req.headers.authorization).replace('Bearer ', '');
+
+  if(authToken){
+    jwt.verify(tokenWithBearer, JWTSecret, (err, data) => {
+      console.log(data)
+    });
+  }else{
+    res.status = 401;
+    res.json({err:  'Invalid Token'})
+  }
+
+  next();
+}
+
+app.get('/games', auth, (req, res) => {
   res.statusCode = 200;
   res.json(DB.games)
 })
@@ -119,22 +138,34 @@ app.put('/game/:id', (req, res) => {
 app.post('/auth', (req, res) => {
   const { email, password } = req.body;
 
-  if(!email || !password) return res.statusCode(400), res.json({ err: 'E-mail inválido' })
+  if(!email || !password) return res.status(400), res.json({ err: 'Invalid E-mail' })
 
   const user = DB.users.find(user => user.email === email);
 
-  if(!user){
+  if(user?.password){
     if(user.password === password){
-      res.status = 200;
-      res.json({ token: "Token Falso!" });
+      jwt.sign({
+        id: user.id,
+        email: user.email
+
+
+      }, JWTSecret, { expiresIn: '48h' }, (err, token) => {
+        if(err){
+          res.status(400); // 
+          res.json({ token: "Falha interna" });
+        }else{
+          res.status(202); // Success
+          res.json({ token });
+        }
+      })
     }else{
-      res.status = 401; // Não autorizado
-      res.json({ err: "Credenciais inválidas!" });
+      res.status(401); // Not allowed
+      res.json({ err: "Invalid credentials!" });
     }
   
   }else{
-    res.status = 404;
-    res.json({ err: 'O E-mail enviado não existe na base de dados.' });
+    res.status(404); // Not found
+    res.json({ err: "Email doesn't exists in DB."});
   }
 })
 
