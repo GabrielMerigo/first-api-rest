@@ -67,7 +67,6 @@ function auth(req, res, next){
   }else{
     res.status = 401;
     res.json({err:  'Invalid Token'});
-    console.log(`caiu no primeiro invalid token`)
   }
 }
 
@@ -172,6 +171,6 @@ app.post('/auth', (req, res) => {
   }
 })
 
-app.listen(8080, () => {
+app.listen(8000, () => {
   console.log('API online!')
 })
