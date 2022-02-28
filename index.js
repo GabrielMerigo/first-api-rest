@@ -53,7 +53,6 @@ function auth(req, res, next){
   const authToken = req.headers.authorization
   const tokenWithBearer = String(req.headers.authorization).replace('Bearer ', '');
 
-  console.log(authToken, 'teste')
   if(authToken){
     jwt.verify(tokenWithBearer, JWTSecret, (err, data) => {
       if(err){
@@ -67,7 +66,8 @@ function auth(req, res, next){
     });
   }else{
     res.status = 401;
-    res.json({err:  'Invalid Token'})
+    res.json({err:  'Invalid Token'});
+    console.log(`caiu no primeiro invalid token`)
   }
 }
 
