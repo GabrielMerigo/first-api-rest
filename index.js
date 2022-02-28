@@ -53,22 +53,28 @@ function auth(req, res, next){
   const authToken = req.headers.authorization
   const tokenWithBearer = String(req.headers.authorization).replace('Bearer ', '');
 
+  console.log(authToken, 'teste')
   if(authToken){
     jwt.verify(tokenWithBearer, JWTSecret, (err, data) => {
-      console.log(data)
+      if(err){
+        res.status(401)
+        res.json({err:  'Invalid Token'})
+      }else{
+        req.token = tokenWithBearer;
+        req.loggedUser = { id: data.id, email: data.email }
+        next();
+      }
     });
   }else{
     res.status = 401;
     res.json({err:  'Invalid Token'})
   }
-
-  next();
 }
 
 app.get('/games', auth, (req, res) => {
   res.statusCode = 200;
   res.json(DB.games)
-})
+});
 
 app.get('/game/:id', (req, res) => {
   const id = parseInt(req.params.id);
@@ -83,10 +89,9 @@ app.get('/game/:id', (req, res) => {
       res.json(game)
     }
   }
-
 });
 
-app.post('/game', (req, res) => {
+app.post('/game', auth, (req, res) => {
   const { name, year, price, id } = req.body;
 
   if (name && year && price) {
@@ -147,8 +152,6 @@ app.post('/auth', (req, res) => {
       jwt.sign({
         id: user.id,
         email: user.email
-
-
       }, JWTSecret, { expiresIn: '48h' }, (err, token) => {
         if(err){
           res.status(400); // 
