@@ -31,8 +31,28 @@ Example Response:
 ```
 
 #### 401 - When it returns 401, it means that you arent authenticate or something wrong ocurred during the athentication.
+Example Response:
 ```
 {
 	"err": "Invalid Token"
+}
+```
+--------
+| Endpoint |Description | Params |  Responses |
+|----------|----------|-------|-----------|
+| /auth   | It is responsible to do login process  | email, password | [200] - [401]
+
+#### 200 - When it returns 200, it will return token.
+Example Response:
+```
+{
+	"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJnYWJpc21lcmlnb0BnbWFpbC5jb20iLCJpYXQiOjE2NDYwOTIzNDksImV4cCI6MTY0NjI2NTE0OX0.i5Jdjdy2PDdhzvo3FTtVbBVGTNaGj3KiqTzhy1dtMcs"
+}
+```
+#### 401 - When it returns 401, it means that your password or email is incorrects.
+Example Response:
+```
+{
+	"err": "Invalid credentials!"
 }
 ```
